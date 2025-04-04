@@ -3,7 +3,7 @@ const { Server } = require("socket.io");
 
 const server = http.createServer();
 const io = new Server(server, {
-    cors: { origin: "https://buzzup-avg.netlify.app" }
+    cors: { origin: ["https://buzzup-avg.netlify.app","https://localhost:5173","https://localhost:5179"] }
 });
 
 const rooms = new Map();
