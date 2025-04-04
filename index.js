@@ -99,7 +99,7 @@ io.on("connection", (socket) => {
     socket.on("killRoom",()=>{
         socket.emit("disconnect");
     })
-    socket.on("leaveRoom", ({ roomCode, playerName }) => {
+    socket.on("leaveRoom", ({ roomCode }) => {
         const room = rooms.get(roomCode);
         if (!room) {
             socket.emit("error", { message: "Room not found" });
