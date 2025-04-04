@@ -86,7 +86,9 @@ io.on("connection", (socket) => {
             console.log(`${playerName} buzzed in room ${roomCode}`);
         }
     });
-
+    socket.on("killRoom",()=>{
+        socket.emit("disconnect");
+    })
     socket.on("disconnect", () => {
         let roomCodeToDelete = null;
 
