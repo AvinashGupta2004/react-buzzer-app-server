@@ -8,7 +8,13 @@ app.use(cors({
     origin:allowedOrigins
 }))
 const server = http.createServer(app);
-const io = new Server(server);
+const io = new Server(server,
+    {
+        cors:{
+            origin:allowedOrigins,
+            methods:["GET","POST"]
+        }
+    });
 
 const rooms = new Map();
 
