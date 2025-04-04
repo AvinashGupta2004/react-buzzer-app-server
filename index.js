@@ -1,10 +1,14 @@
 const http = require('http');
 const { Server } = require("socket.io");
-
-const server = http.createServer();
-const io = new Server(server, {
-    cors: { origin: ["https://buzzup-avg.netlify.app","https://localhost:5173","https://localhost:5179"] }
-});
+const cors = require("cors");
+const express = require("express");
+const app = express();
+const allowedOrigins = ["https://buzzup-avg.netlify.app","https://localhost:5173","https://localhost:5179"];
+app.use(cors({
+    origin:allowedOrigins
+}))
+const server = http.createServer(app);
+const io = new Server(server);
 
 const rooms = new Map();
 
