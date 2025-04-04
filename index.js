@@ -3,7 +3,7 @@ const { Server } = require("socket.io");
 const cors = require("cors");
 const express = require("express");
 const app = express();
-const allowedOrigins = ["https://buzzup-avg.netlify.app","https://localhost:5173","https://localhost:5179"];
+const allowedOrigins = ["https://buzzup-avg.netlify.app","http://localhost:5173","http://localhost:5179"];
 app.use(cors({
     origin:allowedOrigins
 }))
