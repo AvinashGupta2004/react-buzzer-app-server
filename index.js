@@ -99,6 +99,36 @@ io.on("connection", (socket) => {
     socket.on("killRoom",()=>{
         socket.emit("disconnect");
     })
+    socket.on("leaveRoom", ({ roomCode, playerName }) => {
+        const room = rooms.get(roomCode);
+        if (!room) {
+            socket.emit("error", { message: "Room not found" });
+            return;
+        }
+
+        const playerIndex = room.players.findIndex(p => p.playerID === socket.id);
+
+        if (playerIndex !== -1) {
+            // Remove player from the room
+            const [leftPlayer] = room.players.splice(playerIndex, 1);
+
+            // Leave the socket room
+            socket.leave(roomCode);
+
+            // If the player was the host, close the room for everyone
+            if (socket.id === room.hostID) {
+                io.to(roomCode).emit("roomClosed", { message: "Host has left the game" });
+                rooms.delete(roomCode);
+                console.log(`Room ${roomCode} closed (host left)`);
+            } else {
+                // For regular players, just update the room state
+                io.to(roomCode).emit("roomStateUpdate", { room: { ...room } });
+                console.log(`${leftPlayer.name} left room ${roomCode}`);
+            }
+        } else {
+            socket.emit("error", { message: "Player not found in room" });
+        }
+    });
     socket.on("disconnect", () => {
         let roomCodeToDelete = null;
 
