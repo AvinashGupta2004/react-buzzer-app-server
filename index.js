@@ -7,6 +7,10 @@ const allowedOrigins = ["https://buzzup-avg.netlify.app","http://localhost:5173"
 app.use(cors({
     origin:allowedOrigins
 }))
+
+app.get("/",(req,res)=>{
+    res.end("Hello World! This server is Running fine!")
+})
 const server = http.createServer(app);
 const io = new Server(server,
     {
