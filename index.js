@@ -3,7 +3,14 @@ const { Server } = require("socket.io");
 const cors = require("cors");
 const express = require("express");
 const app = express();
-const allowedOrigins = ["https://buzzup-avg.netlify.app","http://localhost:5173","http://localhost:5179"];
+const allowedOrigins = [
+    "https://buzzup-avg.netlify.app",
+    "http://localhost:5173",
+    "http://localhost:5174",
+    "http://localhost:5175",
+    "http://localhost:5176",
+    "http://localhost:5177",
+    "http://localhost:5178"];
 app.use(cors({
     origin:allowedOrigins
 }))
@@ -55,7 +62,7 @@ io.on("connection", (socket) => {
         }
         room.players.push({ playerID: socket.id, name: playerName });
         socket.join(roomID);
-        socket.emit("roomJoined", { roomID: roomID, name: playerName });
+        socket.emit("roomJoined", { roomID: roomID, name: playerName, roomState:room});
         io.to(roomID).emit("roomStateUpdate", { room: { ...room } });
     });
 
@@ -100,9 +107,16 @@ io.on("connection", (socket) => {
             console.log(`${playerName} buzzed in room ${roomCode}`);
         }
     });
-    socket.on("killRoom",()=>{
-        socket.emit("disconnect");
+    socket.on("killRoom",({roomCode})=>{
+        console.log("kill room Called ")
+        let room = rooms.get(roomCode);
+        if (room && room.hostID === socket.id){
+            rooms.delete(roomCode);
+            console.log("room Deleted")
+            io.to(roomCode).emit("exitRoom");
+        }
     })
+
     socket.on("leaveRoom", ({ roomCode }) => {
         const room = rooms.get(roomCode);
         if (!room) {
